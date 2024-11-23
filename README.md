@@ -43,7 +43,7 @@ docker build -t abdullahghallab/hello-world-flask .
 ```
 #### 4. Опубликуем Docker-образ через команду :
 ```
-docker push yourdockerhubusername/hello-world-flask
+docker push yourdockerhubusername/hello-world-app
 ```
 #### 5. После успешной публикации, можео проверять образ на Docker Hub :
 ```
@@ -63,4 +63,72 @@ minikube start
 ```
 minikube status
 ```
+![image](https://github.com/user-attachments/assets/25530a14-4ac0-4ac5-a4af-fe87b0a94377)
+
+## 5- Вам необходимо создать deployment с 2 репликами вашего приложения;
+Для создания Deployment с двумя репликами нашего приложения , необходимо использовать kubectl.
+#### Создаем YAML-файл для Deployment:
+```
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-world-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: hello-world
+  template:
+    metadata:
+      labels:
+        app: hello-world
+    spec:
+      containers:
+        - name: hello-world-container
+          image: abdullahghallab/hello-world-app:latest
+          ports:
+            - containerPort: 32777
+```
+#### создаем Deployment в нашем Kubernetes-кластер
+```
+kubectl apply -f deployment.yaml
+```
+#### Проверим статус:
+```
+kubectl get deployments
+```
+![image](https://github.com/user-attachments/assets/58d2cd42-2efd-45ec-9ff3-d98c00bdb495)
+
+## 6-Создать сервис, через который у вас будет доступ на эти "поды". Выбор типа сервиса остается на ваше усмотрение;
+#### Сервис типа NodePort (простой внешний доступ):
+Этот тип сервиса назначает случайный порт на каждом узле (в данном случае, на нашей машине Minikube), и все запросы на этот порт перенаправляются на наши поди.
+#### Создаем файл service.yaml:
+```
+apiVersion: v1
+kind: Service
+metadata:
+  name: hello-world-service
+spec:
+  type: NodePort
+  selector:
+    app: hello-world
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 32777
+      nodePort: 32000
+```
+#### Применим сервис:
+```
+kubectl apply -f service.yaml
+```
+#### Проверьте статус сервиса:
+```
+kubectl get service hello-world-service
+```
+
+![image](https://github.com/user-attachments/assets/9a68bcce-76cc-4831-a907-e25c22e69bd6)
+#### 7- Запустить в minikube режим проброса портов и подключиться к вашим контейнерам через веб браузер;
+
+![image](https://github.com/user-attachments/assets/80edbc82-24c2-42c5-abd5-8f281d4d1550)
 
