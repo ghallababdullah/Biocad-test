@@ -131,4 +131,7 @@ kubectl get service hello-world-service
 #### 7- Запустить в minikube режим проброса портов и подключиться к вашим контейнерам через веб браузер;
 
 ![image](https://github.com/user-attachments/assets/80edbc82-24c2-42c5-abd5-8f281d4d1550)
+## Схема организации контейнеров и сервисов(draw.io)
+![image](https://github.com/user-attachments/assets/d4dcd338-4c48-4951-9765-441ec4071838)
+
 
